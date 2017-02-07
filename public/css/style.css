@@ -1,0 +1,206 @@
+@charset "UTF-8";
+/* importing external files within the folder */
+/* also can import variables */
+@import url("http://fonts.googleapis.com/css?family=Droid+Sans");
+/* global variables */
+body {
+  font: 100% Helvetica, sans-serif;
+  color: #333; }
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+
+nav li {
+  display: inline-block; }
+
+nav a, nav #fake-links .link, #fake-links nav .link, nav #demo .overview .fakelink, #demo .overview nav .fakelink {
+  display: block;
+  padding: 6px 12px;
+  text-decoration: none; }
+
+/* nested rules */
+#main p {
+  color: #00ff00;
+  width: 5em; }
+  #main p .redbox {
+    background-color: #ff0000;
+    color: #000000;
+    width: 5em; }
+
+#main {
+  width: 5em; }
+  #main p, #main div {
+    font-size: 2em; }
+    #main p a, #main p #fake-links .link, #fake-links #main p .link, #main p #demo .overview .fakelink, #demo .overview #main p .fakelink, #main div a, #main div #fake-links .link, #fake-links #main div .link, #main div #demo .overview .fakelink, #demo .overview #main div .fakelink {
+      font-weight: bold; }
+  #main pre {
+    font-size: 3em; }
+
+/* Referencing Parent Selectors, & must appear at the beginning */
+a, #fake-links .link, #demo .overview .fakelink {
+  font-weight: bold;
+  text-decoration: none; }
+  a:hover, .hoverlink, #fake-links .link:hover, #demo .overview .fakelink:hover {
+    text-decoration: underline; }
+  body.firefox a, body.firefox #fake-links .link, #fake-links body.firefox .link, body.firefox #demo .overview .fakelink, #demo .overview body.firefox .fakelink {
+    font-weight: normal; }
+
+#main {
+  color: black; }
+  #main a, #main #fake-links .link, #fake-links #main .link, #main #demo .overview .fakelink, #demo .overview #main .fakelink {
+    font-weight: bold; }
+    #main a:hover, #main .hoverlink, #main #fake-links .link:hover, #fake-links #main .link:hover, #main #demo .overview .fakelink:hover, #demo .overview #main .fakelink:hover {
+      color: red; }
+
+#main {
+  color: black; }
+  #main-sidebar {
+    border: 1px solid; }
+
+/* nested properties */
+.funky {
+  font-family: fantasy;
+  font-size: 30em;
+  font-weight: bold; }
+
+/* Variables are only available within the level of nested selectors where they�re defined. If they�re defined outside of any nested selectors, they�re available everywhere.  */
+#main {
+  width: 18em; }
+
+#sidebar {
+  width: 5em; }
+
+/* use SassScript variables in selectors and property names using*/
+p.foo {
+  border-color: blue; }
+
+/* mixins */
+body.firefox .header:before {
+  content: "Hi, Firefox users!"; }
+
+/* number operations P.S. if two numbers are separated by / in SassScript, then they will appear that way in the resulting CSS*/
+p {
+  font: 10px/8px;
+  width: 500px;
+  width: 1;
+  height: 250px;
+  margin-left: 9px;
+  font: italic bold 10px/8px; }
+
+/* use variables with plain css properties */
+p {
+  font: 12px/30px; }
+
+/* color operations, arithmetic operations are supported */
+p {
+  color: #050709; }
+
+p {
+  color: rgba(255, 0, 0, 0.8);
+  background-color: rgba(255, 0, 0, 0.25); }
+
+/* string operation */
+/* + is for concatenate */
+p {
+  cursor: e-resize; }
+
+/* quoted string + string result is a quoted string */
+p:before {
+  content: "Foo Bar";
+  font-family: sans-serif; }
+
+p {
+  margin: 7px auto; }
+
+p:before {
+  content: "I ate  pies!"; }
+
+/* Parentheses can be used to affect the order of operations */
+p {
+  width: 7em; }
+
+/* !default  if the variable has already been assigned to, it won�t be re-assigned, but if it doesn�t have a value yet, it will be given one */
+#main {
+  content: "First content";
+  new-content: "First time reference"; }
+
+#main {
+  content: "Non-null content"; }
+
+/* Nested @import */
+.example {
+  color: red; }
+
+/* @media  just like they do in plain CSS but also they can be nested in CSS rules */
+.sidebar {
+  width: 300px; }
+  @media screen and (orientation: landscape) {
+    .sidebar {
+      width: 500px; } }
+
+@media screen and (orientation: landscape) {
+  .sidebar {
+    width: 500px; } }
+
+@media screen and (-webkit-min-device-pixel-ratio: 1.5) {
+  .sidebar {
+    width: 500px; } }
+
+/* @extend telling one selector should inherit the styles of another selector */
+/* @extend the CLASS name to $this NOT combining them all attributes together!!!
+defined for .error are also applied to .seriousError, in addition to the styles specific to .seriousError.*/
+.error, .seriousError, .criticalError {
+  border: 1px #f00;
+  background-color: #fdd; }
+
+.seriousError, .criticalError {
+  border-width: 3px; }
+
+.error.intrusion, .intrusion.seriousError, .intrusion.criticalError {
+  background-image: url("/image/hacked.png"); }
+
+/* any single element can be extended */
+a:hover, .hoverlink, #fake-links .link:hover, #demo .overview .fakelink:hover {
+  text-decoration: underline; }
+
+/* even if they already have another selector can also be extended */
+.comment a.user:hover, .comment .user.hoverlink, .comment #fake-links .user.link:hover, #fake-links .comment .user.link:hover, .comment #demo .overview .user.fakelink:hover, #demo .overview .comment .user.fakelink:hover {
+  font-weight: bold; }
+
+/* multi extends */
+.error, .seriousError, .criticalError {
+  border: 1px #f00;
+  background-color: #fdd; }
+
+.attention, .seriousError, .criticalError {
+  font-size: 3em;
+  background-color: #ff0; }
+
+.seriousError, .criticalError {
+  border-width: 3px; }
+
+/* chaining extends: one selector to extend another selector that in turn extends a third */
+.error, .seriousError, .criticalError {
+  border: 1px #f00;
+  background-color: #fdd; }
+
+.seriousError, .criticalError {
+  border-width: 3px; }
+
+.criticalError {
+  position: fixed;
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%; }
+
+/* selector sequence & Merging Selector Sequences */
+a, #fake-links .link, #demo .overview .fakelink {
+  color: blue; }
+  a:hover, .hoverlink, #fake-links .link:hover, #demo .overview .fakelink:hover {
+    text-decoration: underline; }
+
+#admin .tabbar a, #admin .tabbar #fake-links .link, #fake-links #admin .tabbar .link, #admin .tabbar #demo .overview .fakelink, #demo .overview #admin .tabbar .fakelink {
+  font-weight: bold; }

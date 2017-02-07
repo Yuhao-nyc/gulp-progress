@@ -1,17 +1,311 @@
-.testing {
-  width: percentage(5/7);
-}
+/* importing external files within the folder */
+//@import "rounded-corners", "text-shadow";
+//@import "foo.scss";
+//@import "foo";
+/* also can import variables */
+$family: unquote("Droid+Sans");
+@import url("http://fonts.googleapis.com/css?family=#{$family}");
 
-h1.main {
-  width: percentage(5/7);
-}
-
-h1.main {
-  background-color: #999;
-}
+/* global variables */
+$font-stack:    Helvetica, sans-serif;
+$primary-color: #333;
+$width: 5em;
 
 body {
-    background-color: #ddd;
+  font: 100% $font-stack;
+  color: $primary-color;
 }
 
-//test    test
+
+nav {
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li { display: inline-block; }
+
+  a {
+    display: block;
+    padding: 6px 12px;
+    text-decoration: none;
+  }
+}
+
+/* nested rules */
+#main p {
+  color: #00ff00;
+  width: $width;
+
+  .redbox {
+    background-color: #ff0000;
+    color: #000000;
+    width: $width;
+  }
+}
+
+#main {
+  width: $width;
+
+  p, div {
+    font-size: 2em;
+    a { font-weight: bold; }
+  }
+
+  pre { font-size: 3em; }
+}
+
+/* Referencing Parent Selectors, & must appear at the beginning */
+a {
+  font-weight: bold;
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+  body.firefox & { font-weight: normal; }
+}
+
+#main {
+  color: black;
+  a {
+    font-weight: bold;
+    &:hover { color: red; }
+  }
+}
+
+#main {
+  color: black;
+  &-sidebar { border: 1px solid; }
+}
+
+/* nested properties */
+.funky {
+  font: {
+    family: fantasy;
+    size: 30em;
+    weight: bold;
+  }
+}
+
+/* Variables are only available within the level of nested selectors where they’re defined. If they’re defined outside of any nested selectors, they’re available everywhere.  */
+#main {
+  $width: 18em; // or global width  $width: 18em !global;
+  width: $width;
+}
+
+#sidebar {
+  width: $width;
+}
+
+/* use SassScript variables in selectors and property names using*/
+$name: foo;
+$attr: border;
+p.#{$name} {
+  #{$attr}-color: blue;
+}
+
+/* mixins */
+@mixin firefox-message($selector) {
+  body.firefox #{$selector}:before {
+    content: "Hi, Firefox users!";
+  }
+}
+
+@include firefox-message(".header");
+
+/* number operations P.S. if two numbers are separated by / in SassScript, then they will appear that way in the resulting CSS*/
+p {
+  font: 10px/8px;             // Plain CSS, no division
+  $width: 1000px;
+  width: $width/2;            // Uses a variable, does division
+  width: round(1.5)/2;        // Uses a function, does division
+  height: (500px/2);          // Uses parentheses, does division
+  margin-left: 5px + 8px/2px; // Uses +, does division
+  font: (italic bold 10px/8px); // In a list, parentheses don't count
+}
+
+/* use variables with plain css properties */
+p {
+  $font-size: 12px;
+  $line-height: 30px;
+  font: #{$font-size}/#{$line-height};
+}
+
+/* color operations, arithmetic operations are supported */
+p {
+  color: #010203 + #040506;
+}
+$translucent-red: rgba(255, 0, 0, 0.5);
+p {
+  color: opacify($translucent-red, 0.3);
+  background-color: transparentize($translucent-red, 0.25);
+}
+
+/* string operation */
+/* + is for concatenate */
+p {
+  cursor: e + -resize;
+}
+
+/* quoted string + string result is a quoted string */
+p:before {
+  content: "Foo " + Bar;
+  font-family: sans- + "serif";
+}
+
+p {
+  margin: 3px + 4px auto;
+}
+
+$value: null;  //put dynamic values
+p:before {
+  content: "I ate #{$value} pies!";
+}
+
+/* Parentheses can be used to affect the order of operations */
+p {
+  width: 1em + (2em * 3);
+}
+
+/* !default  if the variable has already been assigned to, it won’t be re-assigned, but if it doesn’t have a value yet, it will be given one */
+$content: "First content";
+$content: "Second content?" !default;
+$new_content: "First time reference" !default;
+
+#main {
+  content: $content;
+  new-content: $new_content;
+}
+
+$content: null;
+$content: "Non-null content" !default;
+
+#main {
+  content: $content;
+}
+
+/* Nested @import */
+.example {
+  color: red;
+}
+#main {
+  //@import "example";
+}
+
+/* @media  just like they do in plain CSS but also they can be nested in CSS rules */
+.sidebar {
+  width: 300px;
+  @media screen and (orientation: landscape) {
+    width: 500px;
+  }
+}
+
+@media screen {
+  .sidebar {
+    @media (orientation: landscape) {
+      width: 500px;
+    }
+  }
+}
+
+$media: screen;
+$feature: -webkit-min-device-pixel-ratio;
+$value: 1.5;
+
+@media #{$media} and ($feature: $value) {
+  .sidebar {
+    width: 500px;
+  }
+}
+
+/* @extend telling one selector should inherit the styles of another selector */
+/* @extend the CLASS name to $this NOT combining them all attributes together!!!
+defined for .error are also applied to .seriousError, in addition to the styles specific to .seriousError.*/
+
+.error {
+  border: 1px #f00;
+  background-color: #fdd;
+}
+.seriousError {
+  @extend .error;
+  border-width: 3px;
+}
+
+.error.intrusion {
+  background-image: url("/image/hacked.png");
+}
+
+/* any single element can be extended */
+.hoverlink {
+  @extend a:hover;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* even if they already have another selector can also be extended */
+.hoverlink {
+  @extend a:hover;
+}     // 2 class names selector exists at the same time
+.comment a.user:hover {
+  font-weight: bold;
+}
+
+/* multi extends */
+.error {
+  border: 1px #f00;
+  background-color: #fdd;
+}
+.attention {
+  font-size: 3em;
+  background-color: #ff0;
+}
+.seriousError {
+  @extend .error;
+  @extend .attention;
+  border-width: 3px;
+}
+
+/* chaining extends: one selector to extend another selector that in turn extends a third */
+.error {
+  border: 1px #f00;
+  background-color: #fdd;
+}
+.seriousError {
+  @extend .error;
+  border-width: 3px;
+}
+.criticalError {
+  @extend .seriousError;
+  position: fixed;
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+}
+
+/* selector sequence & Merging Selector Sequences */
+#fake-links .link {
+  @extend a;
+}
+
+a {
+  color: blue;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+#admin .tabbar a {
+  font-weight: bold;
+}
+#demo .overview .fakelink {
+  @extend a;
+}
+
+//used for mapping
+$colors: (
+  brand-red: #c0392b, /* key1: value1, */
+  brand-blue: #2980b9,
+  text-gray: #2c3e50,
+  text-silver: #bdc3c7
+);
